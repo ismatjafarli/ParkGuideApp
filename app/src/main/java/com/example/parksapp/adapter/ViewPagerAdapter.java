@@ -37,7 +37,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         Picasso.get()
                 .load(images.getUrl())
                 .fit()
-                .placeholder(android.R.drawable.stat_notify_error)
+                .placeholder(android.R.drawable.stat_sys_download)
                 .into(holder.binding.imageView);
     }
 

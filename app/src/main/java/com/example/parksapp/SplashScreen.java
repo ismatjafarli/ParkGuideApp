@@ -22,7 +22,7 @@ public class SplashScreen extends Activity {
 
             @Override
             public void run() {
-                Intent i = new Intent(SplashScreen.this, MapsActivity.class);
+                Intent i = new Intent(SplashScreen.this, MainActivity.class);
                 startActivity(i);
 
                 // close this activity
