@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.example.parksapp.R;
 import com.example.parksapp.adapter.CustomInfoWindow;
@@ -52,13 +54,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SupportMapFragment mapFragment = (SupportMapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
-        // Create instance of viewModel
-        viewModel = ViewModelProviders.of(this).get(ParksViewModel.class);
-        searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
+//        SupportMapFragment supportMapFragment = (SupportMapFragment) getFragmentManager() .findFragmentById(R.id.map);
+//        supportMapFragment.getMapAsync(this);
 
     }
 
@@ -66,19 +64,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+        else
+        {
+            Toast.makeText(getActivity(), "MapFragment is null, why?", Toast.LENGTH_LONG).show();
+        }
+
+        // Create instance of viewModel
+        viewModel = ViewModelProviders.of(this).get(ParksViewModel.class);
+        searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         return binding.getRoot();
     }
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        binding.cardView.setVisibility(View.GONE);
         Bundle args = new Bundle();
         args.putString("id", Objects.requireNonNull(marker.getTag()).toString());
         DetailsFragment fragment = new DetailsFragment();
         fragment.setArguments(args);
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.map, fragment)
+                .replace(R.id.fragment, fragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -86,7 +95,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.clear();
         mMap.setInfoWindowAdapter(new CustomInfoWindow(getContext()));
         mMap.setOnInfoWindowClickListener(this);
         String stateCode = binding.editText.getText().toString().trim();
