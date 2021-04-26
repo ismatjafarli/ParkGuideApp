@@ -1,28 +1,23 @@
-package com.example.parksapp;
+package com.example.parksapp.fragnment;
 
-import androidx.annotation.NonNull;
+import android.os.Bundle;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.app.Activity;
-import android.content.Context;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.Toast;
 
-
+import com.example.parksapp.R;
 import com.example.parksapp.adapter.CustomInfoWindow;
-import com.example.parksapp.databinding.ActivityMapsBinding;
-import com.example.parksapp.fragnment.DetailsFragment;
-import com.example.parksapp.fragnment.ParksFragment;
+import com.example.parksapp.databinding.FragmentMapBinding;
 import com.example.parksapp.model.Root;
 import com.example.parksapp.view.ParksViewModel;
 import com.example.parksapp.view.SearchViewModel;
@@ -34,71 +29,73 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+public class MapFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener {
+    FragmentMapBinding binding;
     private static final String TAG = "Testing";
     private GoogleMap mMap;
-    ActivityMapsBinding binding;
     ParksViewModel viewModel;
     SearchViewModel searchViewModel;
 
+    public MapFragment() {
+        // Required empty public constructor
+    }
+
+
+    public static MapFragment newInstance() {
+        MapFragment fragment = new MapFragment();
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_maps);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_maps);
 
-        //hide keyboard
+//        SupportMapFragment supportMapFragment = (SupportMapFragment) getFragmentManager() .findFragmentById(R.id.map);
+//        supportMapFragment.getMapAsync(this);
 
+    }
 
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+        else
+        {
+            Toast.makeText(getActivity(), "MapFragment is null, why?", Toast.LENGTH_LONG).show();
+        }
 
         // Create instance of viewModel
         viewModel = ViewModelProviders.of(this).get(ParksViewModel.class);
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
-        //Log.d(TAG, "onCreate: "+ viewModel.getParks());
-
-        binding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = null;
-                int id = item.getItemId();
-                if (id == R.id.map_nav) {
-                    binding.editText.getText().clear();
-                    binding.cardView.setVisibility(View.VISIBLE);
-                    mMap.clear();
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.map, mapFragment)
-                            .commit();
-                    mapFragment.getMapAsync(MapsActivity.this);
-                    return true;
-                } else if (id == R.id.parks_nav) {
-                    binding.cardView.setVisibility(View.GONE);
-                    selectedFragment = ParksFragment.newInstance();
-                }
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.map, selectedFragment)
-                        .commit();
-                return true;
-            }
-        });
+        return binding.getRoot();
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Bundle args = new Bundle();
+        args.putString("id", Objects.requireNonNull(marker.getTag()).toString());
+        DetailsFragment fragment = new DetailsFragment();
+        fragment.setArguments(args);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.clear();
-        mMap.setInfoWindowAdapter(new CustomInfoWindow(getApplicationContext()));
+        mMap.setInfoWindowAdapter(new CustomInfoWindow(getContext()));
         mMap.setOnInfoWindowClickListener(this);
         String stateCode = binding.editText.getText().toString().trim();
 
@@ -109,8 +106,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         binding.imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(),0);
                 String editText = binding.editText.getText().toString().trim();
                 if (!editText.isEmpty()) {
                     getSearchedParks(binding.editText.getText().toString().trim());
@@ -119,6 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
     }
 
     private void getSearchedParks(String stateCode) {
@@ -188,34 +184,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        binding.cardView.setVisibility(View.GONE);
-        Bundle args = new Bundle();
-        args.putString("id", Objects.requireNonNull(marker.getTag()).toString());
-        DetailsFragment fragment = new DetailsFragment();
-        fragment.setArguments(args);
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.map, fragment, null)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        View view = getCurrentFocus();
-        if (view != null && (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) && view instanceof EditText && !view.getClass().getName().startsWith("android.webkit.")) {
-            int scrcoords[] = new int[2];
-            view.getLocationOnScreen(scrcoords);
-            float x = ev.getRawX() + view.getLeft() - scrcoords[0];
-            float y = ev.getRawY() + view.getTop() - scrcoords[1];
-            if (x < view.getLeft() || x > view.getRight() || y < view.getTop() || y > view.getBottom())
-                ((InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow((this.getWindow().getDecorView().getApplicationWindowToken()), 0);
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-
 }

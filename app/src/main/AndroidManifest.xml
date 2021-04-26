@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.parksapp">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -20,6 +19,7 @@
 
         <activity
             android:name=".SplashScreen"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing"
             android:label="@string/title_activity_maps"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
             <intent-filter>
@@ -28,11 +28,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MapsActivity"
+
+        <activity android:name=".MainActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
 
         </activity>
+
     </application>
 
 </manifest>
