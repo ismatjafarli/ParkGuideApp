@@ -21,9 +21,11 @@ import android.widget.TextView;
 import com.example.parksapp.R;
 import com.example.parksapp.adapter.ViewPagerAdapter;
 import com.example.parksapp.databinding.FragmentDetailsBinding;
+import com.example.parksapp.model.EntranceFees;
 import com.example.parksapp.model.Root;
 import com.example.parksapp.repository.ParkRepository;
 import com.example.parksapp.view.ActivitiesViewModel;
+import com.example.parksapp.view.FeesViewModel;
 import com.example.parksapp.view.ParkViewModel;
 import com.example.parksapp.view.ParksViewModel;
 import com.example.parksapp.view.TopicsViewModel;
@@ -79,6 +81,8 @@ public class DetailsFragment extends Fragment {
         List<String> activityList = new ArrayList<>();
         TopicsViewModel topicsViewModel = new ViewModelProvider(this).get(TopicsViewModel.class);
         List<String> topicList = new ArrayList<>();
+        List<EntranceFees> feesList = new ArrayList<>();
+        FeesViewModel feesViewModel = new ViewModelProvider(this).get(FeesViewModel.class);
         viewModelPark = ViewModelProviders.of(this).get(ParkViewModel.class);
         viewModelPark.getPark(id).observe(this, new Observer<Root>() {
             @Override
@@ -102,6 +106,13 @@ public class DetailsFragment extends Fragment {
               //  Log.d(TAG, "onChangedd: " + activityList.size());
                 binding.setTopicList(topicList);
                 binding.setTopicsViewModel(topicsViewModel);
+
+                for (int i = 0; i < root.getData().get(0).getEntranceFees().size(); i++) {
+                    feesList.add(root.getData().get(0).getEntranceFees().get(i));
+                }
+                //  Log.d(TAG, "onChangedd: " + activityList.size());
+                binding.setFeesList(feesList);
+                binding.setFeesViewModel(feesViewModel);
             }
         });
     }

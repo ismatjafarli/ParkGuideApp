@@ -51,14 +51,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        SupportMapFragment supportMapFragment = (SupportMapFragment) getFragmentManager() .findFragmentById(R.id.map);
-//        supportMapFragment.getMapAsync(this);
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -114,7 +106,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 }
             }
         });
-
     }
 
     private void getSearchedParks(String stateCode) {

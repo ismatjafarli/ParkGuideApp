@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <import type="java.util.List"/>
+        <import type="com.example.parksapp.model.EntranceFees"/>
         <variable
             name="park"
             type="com.example.parksapp.model.Data" />
@@ -25,12 +25,19 @@
         <variable
             name="topicsViewModel"
             type="com.example.parksapp.view.TopicsViewModel"/>
+
+        <variable
+            name="feesList"
+            type="List&lt;EntranceFees&gt;"/>
+
+        <variable
+            name="feesViewModel"
+            type="com.example.parksapp.view.FeesViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <ScrollView
             android:id="@+id/scrollView2"
@@ -38,8 +45,6 @@
             android:layout_height="match_parent"
             android:background="#EAE7E7"
             android:padding="4dp"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +59,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
                     android:text="@{park.name}"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -62,6 +69,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
                     android:text="@{park.designation}" />
 
                 <androidx.viewpager2.widget.ViewPager2
@@ -73,8 +82,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
                     android:text="Description"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -82,14 +92,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
                     android:text="@{park.description}"
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
                     android:text="Activities"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -97,13 +110,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
                     android:text="@{activitiesViewModel.getActivities(activityList)}" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
                     android:text="Topics"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -111,7 +127,26 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
                     android:text="@{topicsViewModel.getTopics(topicList)}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:text="Fees"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:text="@{feesViewModel.getFees(feesList)}"/>
 
             </LinearLayout>
         </ScrollView>
