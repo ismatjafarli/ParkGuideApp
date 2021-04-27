@@ -24,4 +24,4 @@ By using the application, you can:
 - [Picasso](https://square.github.io/picasso/)
 
 ## Demo
-![Uploading ParkGuideApp.gif…]()
+![ParkGuideApp](https://user-images.githubusercontent.com/77526610/116193096-e0ba0e00-a73f-11eb-8841-a212ed70e8a5.gif)
